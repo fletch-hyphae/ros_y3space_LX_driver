@@ -1,16 +1,18 @@
-# Yostlab IMU driver
+# ROS Yost Lab 3-Space Driver
 
-Yostlab IMU Driver for ROS see: https://yostlabs.com/3-space-sensors/
+## Description
+This is a simple driver based on the work done by user [Cagatay](https://github.com/cagataysari). This extension of the original driver designed to enhance the direct usability from the command-line without modification.
 
-## How to run
-There is a launch file to run driver node
+Out-of-the-box, it allows you to configure the driver with your port, baudrate, etc. and choose whether to use the driver in relative mode (relative to initial position) or absolute mode (relative to magnetic north and gravitational center).
 
-    roslaunch yostlab_imu yost_imu_test.launch
+## Supported Devices:
+This driver _should_ work with any of the USB/RS232 versions of the [Yost Labs 3-Space sensors](https://yostlabs.com/3-space-sensors/).
 
-You can visualize orientation of imu via rviz
+It was tested on the "Watertight" model using its RS232 interface.
 
-    rosrun rviz rviz -d rviz/imu.rviz
-
-## Topics
-Published topics: /imu <sensor_msgs::Imu>
-Subscribed topics: None
+## Usage
+1. Setup and configure your sensor using terminal commands or the 3-Space sensor suite GUI
+2. Use the config file (`config/y3space.yaml`) to choose your port, baudrate, timeout, and driver mode ('relative' / 'absolute')
+3. (After building) Launch the node using `roslaunch y3space_driver driver.launch` and the driver will begin to output messages on these topics:
+	* **/imu/filtered [sesnsor_msgs/Imu]** : Orientation, Angular Vel., and Lin. Acc.
+	* **/imu/temp [std_msgs/Float64]** : The temperature in deg C as per the sensor

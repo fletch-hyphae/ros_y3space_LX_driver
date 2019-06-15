@@ -1,21 +1,21 @@
 <?xml version="1.0"?>
-<package>
-  <name>yostlab_imu</name>
+<package format="2">
+  <name>y3space_driver</name>
   <version>0.0.0</version>
-  <description>The Yostlab IMU driver package</description>
-  <maintainer email="cagatay@robostate.com">cagatay</maintainer>
-  <license>TODO</license>
+  <description>Yost Lab 3-Space ROS Driver Package</description>
+
+  <maintainer email="jgomallette@gmail.com">Jeremy (MrCerealKiller)</maintainer>
+  <author email="cagatay@robostate.com">cagatay</author>
+  <author email="cagatay@robostate.com">cagatay</author>
+  
+  <license>MIT</license>
+  
   <buildtool_depend>catkin</buildtool_depend>
-  <build_depend>geometry_msgs</build_depend>
-  <build_depend>roscpp</build_depend>
-  <build_depend>rospy</build_depend>
-  <build_depend>sensor_msgs</build_depend>
-  <build_depend>serial</build_depend>
-  <run_depend>geometry_msgs</run_depend>
-  <run_depend>roscpp</run_depend>
-  <run_depend>rospy</run_depend>
-  <run_depend>sensor_msgs</run_depend>
-  <run_depend>serial</run_depend>
-  <export>
-  </export>
+  <depend>geometry_msgs</depend>
+  <depend>roscpp</depend>
+  <depend>rospy</depend>
+  <depend>sensor_msgs</depend>
+  <depend>serial</depend>
+  <depend>std_msgs</depend>
+
 </package>
