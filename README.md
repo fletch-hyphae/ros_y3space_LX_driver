@@ -12,7 +12,7 @@ It was tested on the "Watertight" model using its RS232 interface.
 
 ## Usage
 1. Setup and configure your sensor using terminal commands or the 3-Space sensor suite GUI
-2. Use the config file (`config/y3space.yaml`) to choose your port, baudrate, timeout, and driver mode ('relative' / 'absolute')
+2. Use the config file (`config/y3space.yaml`) to choose your port, baudrate, timeout, driver mode ('relative' / 'absolute'), etc.
 3. (After building) Launch the node using `roslaunch y3space_driver driver.launch` and the driver will begin to output messages on these topics:
-	* **/imu/filtered [sesnsor_msgs/Imu]** : Orientation, Angular Vel., and Lin. Acc.
+	* **/imu/filtered [sesnsor_msgs/Imu]** : Orientation, Angular Velocity, and Linear Acceleration
 	* **/imu/temp [std_msgs/Float64]** : The temperature in deg C as per the sensor
