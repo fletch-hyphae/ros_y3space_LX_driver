@@ -4,7 +4,7 @@
 #include <ros/ros.h>
 #include <sensor_msgs/Imu.h>
 #include <std_msgs/Float64.h>
-#include <y3space_driver/SerialInterface.h>
+#include <SerialInterface.h>
 
 
 //! \brief Yost Labs 3-Space ROS Driver Class
@@ -63,7 +63,7 @@ private:
     ros::NodeHandle m_pnh;    ///< Private Nodehandle for use with Serial Interface
     ros::Publisher m_imuPub;  ///< Publisher for IMU messages
     ros::Publisher m_tempPub; ///< Publisher for temperature messages
-    static constexpr std::string logger = "[ Y3SpaceDriver ] "; //< Logger tag
+    static const std::string logger; //< Logger tag
 
     /*
      * Below is a list of commands that can be written via the

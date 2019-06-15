@@ -1,5 +1,7 @@
-#include <y3space_driver/Y3SpaceDriver.h>
+#include <Y3SpaceDriver.h>
 
+
+const std::string Y3SpaceDriver::logger = "[ Y3SpaceDriver ] ";
 
 Y3SpaceDriver::Y3SpaceDriver(ros::NodeHandle& nh, ros::NodeHandle& pnh):
     SerialInterface(pnh),
@@ -7,7 +9,7 @@ Y3SpaceDriver::Y3SpaceDriver(ros::NodeHandle& nh, ros::NodeHandle& pnh):
     m_nh(nh)
 {
     this->serialConnect();
-    this->m_imuPub = this->yostlab_nh_.advertise<sensor_msgs::Imu>("/imu/filtered", 10);
+    this->m_imuPub = this->m_nh.advertise<sensor_msgs::Imu>("/imu/filtered", 10);
     this->m_tempPub = this->m_nh.advertise<std_msgs::Float64>("/imu/temp", 10);
 }
 
@@ -60,11 +62,12 @@ const std::string Y3SpaceDriver::getAxisDirection()
         }
         else if (buf == "19\r\n")
         {
-            return "X: Forward, Y:Left, Z: Up";
+            return "X: Forward, Y: Left, Z: Up";
         }
         else
         {
-            return ("Unknown. Buffer indicates: " + buf + ")");
+            ROS_WARN_STREAM(this->logger << "Buffer indicates: " + buf);
+            return "Unknown";
         }
     }();
 
@@ -110,7 +113,8 @@ const std::string Y3SpaceDriver::getCalibMode()
         }
         else
         {
-            return ("Unknown. Buffer indicates: " + buf + ")");
+            ROS_WARN_STREAM(this->logger << "Buffer indicates: " + buf);
+            return "Unknown";
         }
     }();
 
@@ -135,12 +139,13 @@ const std::string Y3SpaceDriver::getMIMode()
         }
         else
         {
-            return ("Unknown. Buffer indicates: " + ")");
+            ROS_WARN_STREAM(this->logger << "Buffer indicates: " + buf);
+            return "Unknown";
         }
     }();
 
-    ROS_INFO_STREAM(this->logger << "MI Mode: " << ret_buf << ", buf is: " << buf);
-    return ret_buf;
+    ROS_INFO_STREAM(this->logger << "MI Mode: " << ret);
+    return ret;
 }
 
 
@@ -161,6 +166,7 @@ void Y3SpaceDriver::run()
     this->serialWriteString(TARE_WITH_CURRENT_QUATERNION);
     this->serialWriteString(SET_STREAMING_TIMING_100_MS);
     this->serialWriteString(START_STREAMING);
+    ROS_INFO_STREAM(this->logger << "Ready");
   
     ros::Rate rate(10);
     int line = 0;
@@ -191,16 +197,16 @@ void Y3SpaceDriver::run()
                 // Prepare IMU message
                 imuMsg.header.stamp           = ros::Time::now();
                 imuMsg.header.frame_id        = "imu_link";
-                imuMsg.orientation.x          = parsed_val_[0];
-                imuMsg.orientation.y          = parsed_val_[1];
-                imuMsg.orientation.z          = parsed_val_[2];
-                imuMsg.orientation.w          = parsed_val_[3];
-                imuMsg.angular_velocity.x     = parsed_val_[4];
-                imuMsg.angular_velocity.y     = parsed_val_[5];
-                imuMsg.angular_velocity.z     = parsed_val_[6];
-                imuMsg.linear_acceleration.x  = parsed_val_[7];
-                imuMsg.linear_acceleration.y  = parsed_val_[8];
-                imuMsg.linear_acceleration.z  = parsed_val_[9];
+                imuMsg.orientation.x          = parsedVals[0];
+                imuMsg.orientation.y          = parsedVals[1];
+                imuMsg.orientation.z          = parsedVals[2];
+                imuMsg.orientation.w          = parsedVals[3];
+                imuMsg.angular_velocity.x     = parsedVals[4];
+                imuMsg.angular_velocity.y     = parsedVals[5];
+                imuMsg.angular_velocity.z     = parsedVals[6];
+                imuMsg.linear_acceleration.x  = parsedVals[7];
+                imuMsg.linear_acceleration.y  = parsedVals[8];
+                imuMsg.linear_acceleration.z  = parsedVals[9];
 
                 // Prepare temperature message        
                 tempMsg.data = parsedVals[10];
@@ -208,8 +214,8 @@ void Y3SpaceDriver::run()
                 // Clear parsed values
                 parsedVals.clear();
 
-                this->imuPub.publish(imuMsg);
-                this->tempPub.publish(tempMsg);
+                this->m_imuPub.publish(imuMsg);
+                this->m_tempPub.publish(tempMsg);
             }
         }
 

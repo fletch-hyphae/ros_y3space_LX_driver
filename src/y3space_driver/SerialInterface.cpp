@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-#include <y3space_driver/SerialInterface.h>
+#include <SerialInterface.h>
 
 SerialInterface::SerialInterface(ros::NodeHandle& nh):
 	m_logger("[ Y3SSerialInterface ] ")
@@ -33,12 +33,12 @@ SerialInterface::SerialInterface(ros::NodeHandle& nh):
 
 SerialInterface::~SerialInterface()
 {
-    if (connection != NULL)
+    if (m_connection != NULL)
     {
-      	if(connection->isOpen())
+      	if(m_connection->isOpen())
       	{
-        	ROS_INFO_STREAM(this->logger << " Closing the Serial Port");
-        	connection->close();
+        	ROS_INFO_STREAM(this->m_logger << " Closing the Serial Port");
+        	m_connection->close();
       	}
     }
 }
@@ -47,72 +47,72 @@ void SerialInterface::serialConnect()
 {
 	try
 	{
-  		connection.reset(new Serial(m_port, (uint32_t)m_baud, Timeout::simpleTimeout(60000)));
+  		m_connection.reset(new Serial(m_port, (uint32_t)m_baudrate, Timeout::simpleTimeout(60000)));
 	}
 	catch(IOException &e)
 	{
   		std::string ioerror = e.what();
-  		ROS_ERROR_STREAM(this->logger << "Unable to connect port: " << m_port.c_str());
-  		ROS_ERROR_STREAM(this->logger << "Is the serial port open?\nError: "  << ioerror.c_str());
+  		ROS_ERROR_STREAM(this->m_logger << "Unable to connect port: " << m_port.c_str());
+  		ROS_ERROR_STREAM(this->m_logger << "Is the serial port open?\nError: "  << ioerror.c_str());
 	}
 
-	if(connection && connection->isOpen())
+	if(m_connection && m_connection->isOpen())
 	{
-  		ROS_INFO_STREAM(this->logger
+  		ROS_INFO_STREAM(this->m_logger
                   		<< "Connection Established with Port: " << m_port.c_str()
-                  		<< " with baudrate: " << m_baud);
+                  		<< " with baudrate: " << m_baudrate);
 	}
 }
 
 void SerialInterface::serialWrite(uint8_t *buf, size_t len)
 {
-    size_t written = this->connection->write(buf, len);
+    size_t written = this->m_connection->write(buf, len);
     if (written != len)
     {
-    	ROS_WARN_STREAM(this->logger << "Len: " << len  << "; Written: " << written);
+    	ROS_WARN_STREAM(this->m_logger << "Len: " << len  << "; Written: " << written);
     }
 }
 
 void SerialInterface::serialWriteString(const std::string& str)
 {
-    size_t written = this->connection->write(str);
+    size_t written = this->m_connection->write(str);
 }
 
 uint8_t SerialInterface::serialReadByte()
 {
     uint8_t buf;
-    if(this->connection->available() > 0)
+    if(this->m_connection->available() > 0)
     {
-      	size_t bytes = this->connection->read(&buf, 1);
+      	size_t bytes = this->m_connection->read(&buf, 1);
       	if (bytes != 1)
       	{
-        	ROS_WARN_STREAM(this->logger << "Unable to read");
+        	ROS_WARN_STREAM(this->m_logger << "Unable to read");
       	}
     }
     return buf;
 }
 
-std::string serialReadLine()
+std::string SerialInterface::serialReadLine()
 {
-    std::string str = this->connection->readline();
+    std::string str = this->m_connection->readline();
     return str;
 }
 
-uint8_t* serialReadBytes(size_t nbytes)
+uint8_t* SerialInterface::serialReadBytes(size_t nbytes)
 {
     uint8_t *buf = (uint8_t *)malloc(sizeof(uint8_t) * nbytes);
-    if(this->connection->available() > 0)
+    if(this->m_connection->available() > 0)
     {
-      	size_t bytes = this->connection->read(buf, nbytes);
+      	size_t bytes = this->m_connection->read(buf, nbytes);
       	if (bytes != nbytes)
       	{
-        	ROS_WARN_STREAM(this->logger << "Unable to read");
+        	ROS_WARN_STREAM(this->m_logger << "Unable to read");
       	}
     }
-    return buffer;
+    return buf;
 }
 
-virtual inline size_t available()
+size_t SerialInterface::available()
 {
-    return this->connection->available();
+    return this->m_connection->available();
 }

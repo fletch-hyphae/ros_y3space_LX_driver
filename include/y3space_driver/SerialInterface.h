@@ -54,31 +54,31 @@ public:
     //!
     //! Write to byte serial
     //!
-    virtual inline void serialWrite(uint8_t *buf, size_t len);
+    virtual void serialWrite(uint8_t *buf, size_t len);
     //!
     //!  Write string to serial
     //!
-    virtual inline void serialWriteString(const std::string& str);
+    virtual void serialWriteString(const std::string& str);
     //!
     //! Read byte from serial
     //!
-    virtual inline uint8_t serialReadByte();
+    virtual uint8_t serialReadByte();
     //!
     //! Read line from serial
     //!
-    virtual inline std::string serialReadLine();
+    virtual std::string serialReadLine();
     //!
     //! Read variable number of bytes from serial
     //!
-    virtual inline uint8_t* serialReadBytes(size_t nbytes);
+    virtual uint8_t* serialReadBytes(size_t nbytes);
     //!
     //! Check if port is available and has bytes
     //!
-    virtual inline size_t available();
+    virtual size_t available();
     //!
     //! Getter for baudrate
     //!
-    const int& getBaudRate() { return m_baud; }
+    const int& getBaudRate() { return m_baudrate; }
     //!
     //! Getter for serial port
     //!
