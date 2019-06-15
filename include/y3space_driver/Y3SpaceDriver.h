@@ -14,7 +14,7 @@ public:
     //!
     //! Constructor
     //!
-    Y3SpaceDriver(ros::NodeHandle& nh, ros::NodeHandle& pnh);
+    Y3SpaceDriver(ros::NodeHandle& nh, ros::NodeHandle& pnh, std::string port, int baudrate, int timeout, std::string mode, std::string frame);
     //!
     //! Destructor
     //!
@@ -63,7 +63,12 @@ private:
     ros::NodeHandle m_pnh;    ///< Private Nodehandle for use with Serial Interface
     ros::Publisher m_imuPub;  ///< Publisher for IMU messages
     ros::Publisher m_tempPub; ///< Publisher for temperature messages
-    static const std::string logger; //< Logger tag
+    std::string m_mode;       ///< String indicating the desired driver mode
+    std::string m_frame;      ///< The frame ID to broadcast to tf
+    static const std::string logger; ///< Logger tag
+    
+    static const std::string MODE_ABSOLUTE;
+    static const std::string MODE_RELATIVE;
 
     /*
      * Below is a list of commands that can be written via the

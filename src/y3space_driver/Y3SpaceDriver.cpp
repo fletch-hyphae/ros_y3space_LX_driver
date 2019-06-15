@@ -2,11 +2,21 @@
 
 
 const std::string Y3SpaceDriver::logger = "[ Y3SpaceDriver ] ";
+const std::string Y3SpaceDriver::MODE_ABSOLUTE = "absolute";
+const std::string Y3SpaceDriver::MODE_RELATIVE = "relative";
 
-Y3SpaceDriver::Y3SpaceDriver(ros::NodeHandle& nh, ros::NodeHandle& pnh):
-    SerialInterface(pnh),
+Y3SpaceDriver::Y3SpaceDriver(ros::NodeHandle& nh,
+                             ros::NodeHandle& pnh,
+                             std::string port,
+                             int baudrate,
+                             int timeout,
+                             std::string mode,
+                             std::string frame):
+    SerialInterface(port, baudrate, timeout),
     m_pnh(pnh),
-    m_nh(nh)
+    m_nh(nh),
+    m_mode(mode),
+    m_frame(frame)
 {
     this->serialConnect();
     this->m_imuPub = this->m_nh.advertise<sensor_msgs::Imu>("/imu/filtered", 10);
@@ -161,12 +171,26 @@ void Y3SpaceDriver::run()
     this->getAxisDirection();
     this->getCalibMode();
     this->getMIMode();
-    this->serialWriteString(SET_STREAMING_SLOTS_ROS_IMU_ABSOLUTE);
+    if (m_mode == MODE_ABSOLUTE)
+    {
+        ROS_INFO_STREAM(this->logger << "Using absolute driver stream configuration");
+        this->serialWriteString(SET_STREAMING_SLOTS_ROS_IMU_ABSOLUTE);
+    }
+    else if (m_mode == MODE_RELATIVE)
+    {
+        ROS_INFO_STREAM(this->logger << "Using relative driver stream configuration");
+        this->serialWriteString(SET_STREAMING_SLOTS_ROS_IMU_RELATIVE);
+    }
+    else
+    {
+        ROS_WARN_STREAM(this->logger << "Unknown driver mode set... Defaulting to relative");
+        this->serialWriteString(SET_STREAMING_SLOTS_ROS_IMU_RELATIVE);
+    }
     this->serialWriteString(TARE_WITH_CURRENT_ORIENTATION);
     this->serialWriteString(TARE_WITH_CURRENT_QUATERNION);
     this->serialWriteString(SET_STREAMING_TIMING_100_MS);
     this->serialWriteString(START_STREAMING);
-    ROS_INFO_STREAM(this->logger << "Ready");
+    ROS_INFO_STREAM(this->logger << "Ready\n");
   
     ros::Rate rate(10);
     int line = 0;
@@ -196,7 +220,7 @@ void Y3SpaceDriver::run()
         
                 // Prepare IMU message
                 imuMsg.header.stamp           = ros::Time::now();
-                imuMsg.header.frame_id        = "imu_link";
+                imuMsg.header.frame_id        = m_frame;
                 imuMsg.orientation.x          = parsedVals[0];
                 imuMsg.orientation.y          = parsedVals[1];
                 imuMsg.orientation.z          = parsedVals[2];

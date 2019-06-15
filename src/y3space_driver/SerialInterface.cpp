@@ -1,34 +1,11 @@
-/*
- * MIT License
- * 
- * Copyright (c) 2018 Cagatay Sarı
- * 
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
-
 #include <SerialInterface.h>
 
-SerialInterface::SerialInterface(ros::NodeHandle& nh):
+SerialInterface::SerialInterface(std::string port, int baudrate, int timeout):
 	m_logger("[ Y3SSerialInterface ] ")
 {
-    nh.param<int>("BAUD_RATE", m_baudrate, 115200);	//115200 is default for 3Space devices
-    nh.param<std::string>("SERIAL_PORT", m_port, "/dev/imu");
+    m_port = port;
+    m_baudrate = baudrate;
+    m_timeout = timeout;
 }
 
 SerialInterface::~SerialInterface()
@@ -47,7 +24,7 @@ void SerialInterface::serialConnect()
 {
 	try
 	{
-  		m_connection.reset(new Serial(m_port, (uint32_t)m_baudrate, Timeout::simpleTimeout(60000)));
+  		m_connection.reset(new Serial(m_port, (uint32_t)m_baudrate, Timeout::simpleTimeout(m_timeout)));
 	}
 	catch(IOException &e)
 	{
