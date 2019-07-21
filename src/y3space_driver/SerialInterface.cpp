@@ -30,7 +30,7 @@ void SerialInterface::serialConnect()
 	{
   		std::string ioerror = e.what();
   		ROS_ERROR_STREAM(this->m_logger << "Unable to connect port: " << m_port.c_str());
-  		ROS_ERROR_STREAM(this->m_logger << "Is the serial port open?\nError: "  << ioerror.c_str());
+  		ROS_ERROR_STREAM(this->m_logger << "Is the device pluggged in? Is the serial port open?\nError: "  << ioerror.c_str());
 	}
 
 	if(m_connection && m_connection->isOpen())

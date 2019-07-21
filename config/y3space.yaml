@@ -1,5 +1,5 @@
 port: '/dev/imu'
 baudrate: 115200
 timeout: 60000
-mode: 'absolute'  # should be 'relative' or 'absolute'
+mode: 'relative'  # should be 'relative' or 'absolute'
 frame: 'imu_link'
