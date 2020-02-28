@@ -9,13 +9,13 @@ from std_msgs.msg import Float64
 class Y3SpaceRaw:
 	PI = 3.14159265359
 
-	def __init__(self):
-		self.rollPub = rospy.Publisher('~/raw/roll', Float64, queue_size=1)
-		self.pitchPub = rospy.Publisher('~/raw/pitch', Float64, queue_size=1)
-		self.yawPub = rospy.Publisher('~/raw/yaw', Float64, queue_size=1)
+	def __init__(self, rollPub, pitchPub, yawPub, degrees, verbose):
+		self.rollPub = rollPub
+		self.pitchPub = pitchPub
+		self.yawPub = yawPub
 
-		self.degrees = True # TODO: change to rosparam
-		self.verbose = True # TODO: change to rosparam
+		self.degrees = degrees
+		self.verbose = verbose
 
 	def callback(self, data):
 		quat = [data.orientation.x,
@@ -43,7 +43,15 @@ class Y3SpaceRaw:
 
 if __name__ == '__main__':
 	rospy.init_node('Y3SpaceRaw')
-	raw = Y3SpaceRaw()
+
+	rollPub = rospy.Publisher('~/raw/roll', Float64, queue_size=1)
+	pitchPub = rospy.Publisher('~/raw/pitch', Float64, queue_size=1)
+	yawPub = rospy.Publisher('~/raw/yaw', Float64, queue_size=1)
+	
+	degrees = rospy.get_param('~degrees', False)
+	verbose = rospy.get_param('~verbose', False)
+
+	raw = Y3SpaceRaw(rollPub, pitchPub, yawPub, degrees, verbose)
 
 	sub = rospy.Subscriber('/imu/filtered', Imu, raw.callback)
 	rospy.spin()
