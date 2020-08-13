@@ -1,4 +1,4 @@
-# ROS Yost Lab 3-Space Driver
+# ROS Yost Lab 3-Space LX Driver
 
 ## Description
 This is a simple driver based on the work done by user [Cagatay](https://github.com/cagataysari). This extension of the original driver designed to enhance the direct usability from the command-line without modification.
