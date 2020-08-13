@@ -52,6 +52,10 @@ public:
     //!
     void startGyroCalibration(void);
     //!
+    //! \brief startAutoCalibration
+    //!
+    void startAutoCalibration(void);
+    //!
     //! \brief setMIMode
     //! \param on True to set , False to Unset
     //!
@@ -134,6 +138,7 @@ private:
     // ----------------------------------------------------------------------------------------------------
 
     static constexpr auto GET_STREAMING_SLOTS                   = ":81\n";
+    static constexpr auto SET_STREAMING_TIMING_1_MS             = ":82,1000,0,0\n";
     static constexpr auto SET_STREAMING_TIMING_100_MS           = ":82,100000,0,0\n";
     static constexpr auto SET_STREAMING_TIMING_1000_MS          = ":82,1000000,0,0\n";
     static constexpr auto SET_STREAMING_TIMING_5000_MS          = ":82,5000000,0,0\n";
@@ -167,9 +172,10 @@ private:
 
     // Calibration Commands
     static constexpr auto BEGIN_GYRO_AUTO_CALIB       = ":165\n";
+    static constexpr auto BEGIN_AUTO_CALIB            = ":171,1\n";
     static constexpr auto SET_CALIB_MODE_BIAS         = ":169,0\n";
     static constexpr auto SET_CALIB_MODE_SCALE_BIAS   = ":169,1\n";
-    static constexpr auto GET_CALIB_MODE              = ":170\n";
+    static constexpr auto GET_CALIB_MODE              = ":172\n";
 
     // System Commands
     static constexpr auto GET_FIRMWARE_VERSION_STRING = ":223\n";
