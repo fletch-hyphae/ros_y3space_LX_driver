@@ -89,11 +89,20 @@ void Y3SpaceDriver::startGyroCalibration(void)
 {
     ROS_INFO_STREAM(this->logger << "Starting Auto Gyro Calibration...");
     this->serialWriteString(BEGIN_GYRO_AUTO_CALIB);
-  
-    ros::Duration(5.0).sleep();
+
+    ros::Duration(10.0).sleep();
     ROS_INFO_STREAM(this->logger << "Proceeding");
 }
 
+void Y3SpaceDriver::startAutoCalibration(void)
+{
+    ROS_INFO_STREAM(this->logger << "Starting Auto Calibration...");
+    this->serialWriteString(BEGIN_AUTO_CALIB);
+
+    ros::Duration(10.0).sleep();
+    ROS_INFO_STREAM(this->logger << "Proceeding");
+
+}
 void Y3SpaceDriver::setMIMode(bool on)
 {
     if(on)
@@ -166,11 +175,12 @@ void Y3SpaceDriver::run()
     sensor_msgs::Imu imuMsg;
     std_msgs::Float64 tempMsg;
 
-    this->startGyroCalibration();
+    //this->startGyroCalibration();
+    this->startAutoCalibration();
     this->getSoftwareVersion();
     this->getAxisDirection();
     this->getCalibMode();
-    this->getMIMode();
+    //this->getMIMode();
     if (m_mode == MODE_ABSOLUTE)
     {
         ROS_INFO_STREAM(this->logger << "Using absolute driver stream configuration");
@@ -188,11 +198,11 @@ void Y3SpaceDriver::run()
     }
     this->serialWriteString(TARE_WITH_CURRENT_ORIENTATION);
     this->serialWriteString(TARE_WITH_CURRENT_QUATERNION);
-    this->serialWriteString(SET_STREAMING_TIMING_100_MS);
+    this->serialWriteString(SET_STREAMING_TIMING_1_MS);
     this->serialWriteString(START_STREAMING);
     ROS_INFO_STREAM(this->logger << "Ready\n");
-  
-    ros::Rate rate(10);
+
+    ros::Rate rate(1000);
     int line = 0;
     while(ros::ok())
     {
@@ -209,7 +219,10 @@ void Y3SpaceDriver::run()
             {
                 parsedVals.push_back(i);
                 if (ss.peek() == ',')
-                ss.ignore();
+                {
+
+                    ss.ignore();
+                }
             }
 
             // Should stop reading when line == number of tracked streams
@@ -217,8 +230,9 @@ void Y3SpaceDriver::run()
             {
                 // Reset line tracker
                 line = 0;
-        
-                // Prepare IMU message
+
+                
+
                 imuMsg.header.stamp           = ros::Time::now();
                 imuMsg.header.frame_id        = m_frame;
                 imuMsg.orientation.x          = parsedVals[0];
@@ -232,7 +246,7 @@ void Y3SpaceDriver::run()
                 imuMsg.linear_acceleration.y  = parsedVals[8];
                 imuMsg.linear_acceleration.z  = parsedVals[9];
 
-                // Prepare temperature message        
+                // Prepare temperature message
                 tempMsg.data = parsedVals[10];
 
                 // Clear parsed values
