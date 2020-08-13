@@ -70,7 +70,7 @@ private:
     std::string m_mode;       ///< String indicating the desired driver mode
     std::string m_frame;      ///< The frame ID to broadcast to tf
     static const std::string logger; ///< Logger tag
-    
+
     static const std::string MODE_ABSOLUTE;
     static const std::string MODE_RELATIVE;
 
@@ -169,6 +169,8 @@ private:
     static constexpr auto BEGIN_MI_MODE_FIELD_CALIBRATION  = ":114\n";
     static constexpr auto SET_AXIS_DIRECTIONS_ENU          = ":116,8\n";
     static constexpr auto SET_AXIS_DIRECTIONS_DEFAULT      = ":116,5\n";
+    static constexpr auto SET_AXIS_DIRECTIONS_4_OUSTER      = ":116,19\n";
+
 
     // Calibration Commands
     static constexpr auto BEGIN_GYRO_AUTO_CALIB       = ":165\n";
