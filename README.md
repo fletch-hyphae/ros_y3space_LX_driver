@@ -6,9 +6,9 @@ This is a simple driver based on the work done by user [Cagatay](https://github.
 Out-of-the-box, it allows you to configure the driver with your port, baudrate, etc. and choose whether to use the driver in relative mode (relative to initial position) or absolute mode (relative to magnetic north and gravitational center).
 
 ## Supported Devices:
-This driver _should_ work with any of the USB/RS232 versions of the [Yost Labs 3-Space sensors](https://yostlabs.com/3-space-sensors/).
+This driver _should_ work with any of the USB/RS232 "LX" versions of the [Yost Labs 3-Space sensors](https://yostlabs.com/3-space-sensors/).
 
-It was tested on the "Watertight" model using its RS232 interface.
+It was tested on the LX evaluation board using its USB interface.
 
 ## Usage
 1. Setup and configure your sensor using terminal commands or the 3-Space sensor suite GUI
