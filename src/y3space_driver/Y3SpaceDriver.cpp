@@ -39,8 +39,13 @@ const std::string Y3SpaceDriver::getSoftwareVersion()
     return buf;
 }
 
+
+
 const std::string Y3SpaceDriver::getAxisDirection()
 {
+    this->serialWriteString(SET_AXIS_DIRECTIONS_4_OUSTER);
+
+    ros::Duration(10.0).sleep();
     this->serialWriteString(GET_AXIS_DIRECTION);
 
     const std::string buf = this->serialReadLine();
@@ -231,7 +236,22 @@ void Y3SpaceDriver::run()
                 // Reset line tracker
                 line = 0;
 
-                
+                // Prepare IMU message
+                //crazy attempt to view parsedVals:
+                //std::ostringstream vts;
+
+
+    // Convert all but the last element to avoid a trailing ","
+                //std::copy(parsedVals.begin(), parsedVals.end()-1,
+                //std::ostream_iterator<int>(vts, ", "));
+
+    // Now add the last element with no delimiter
+                //vts << parsedVals.back();
+
+
+                //std::cout << vts.str() << std::endl;
+                //ROS_INFO_STREAM(this->logger << "parsedVals: muuuu" << vts.str() << std::endl);
+                // end crazy attempt part
 
                 imuMsg.header.stamp           = ros::Time::now();
                 imuMsg.header.frame_id        = m_frame;
